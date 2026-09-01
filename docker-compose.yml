@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    container_name: assistencia_app
+    ports:
+      - "8080:80"
+    volumes:
+      - .:/var/www/html
+    depends_on:
+      - db
+    environment:
+      DB_HOST: db
+      DB_USER: appuser
+      DB_PASSWORD: appsecret
+      DB_NAME: assistencia_tecnica
+
+  db:
+    image: mysql:8.0
+    container_name: assistencia_db
+    restart: always
+    environment:
+      MYSQL_DATABASE: assistencia_tecnica
+      MYSQL_USER: appuser
+      MYSQL_PASSWORD: appsecret
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "3307:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./banco/assistencia_tecnica.sql:/docker-entrypoint-initdb.d/assistencia_tecnica.sql
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: assistencia_phpmyadmin
+    depends_on:
+      - db
+    ports:
+      - "8081:80"
+    environment:
+      PMA_HOST: db
+      MYSQL_ROOT_PASSWORD: root
+
+volumes:
+  db_data:
