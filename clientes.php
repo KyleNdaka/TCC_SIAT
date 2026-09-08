@@ -16,10 +16,10 @@ if (isset($_GET["delete"])) {
     $id = (int)($_GET["delete"] ?? 0);
 
     if ($id > 0) {
-        $ordensRelacionadas = $conexao->query("SELECT id FROM ordens_servico WHERE cliente_id = $id");
+        $ordensRelacionadas = $conexao->query("SELECT id_Servico FROM ordens_servico WHERE cliente_id = $id");
         $idsOrdens = [];
         while ($linha = $ordensRelacionadas->fetch_assoc()) {
-            $idsOrdens[] = (int) $linha["id"];
+            $idsOrdens[] = (int) $linha["id_Servico"];
         }
 
         if (!empty($idsOrdens)) {
@@ -29,7 +29,7 @@ if (isset($_GET["delete"])) {
         }
 
         $conexao->query("DELETE FROM aparelhos WHERE cliente_id = $id");
-        $conexao->query("DELETE FROM clientes WHERE id = $id");
+        $conexao->query("DELETE FROM clientes WHERE id_Cliente = $id");
         header("Location: clientes.php");
         exit;
     }
@@ -37,14 +37,14 @@ if (isset($_GET["delete"])) {
 
 if (isset($_GET["id"])) {
     $id = (int)$_GET["id"];
-    $resultado = $conexao->query("SELECT * FROM clientes WHERE id = $id LIMIT 1");
+    $resultado = $conexao->query("SELECT * FROM clientes WHERE id_Cliente = $id LIMIT 1");
     if ($resultado && $resultado->num_rows > 0) {
         $clienteEditando = $resultado->fetch_assoc();
     }
 }
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    $id = (int)($_POST["id"] ?? 0);
+    $id = (int)($_POST["id_Cliente"] ?? 0);
     $nome = trim($_POST["nome"] ?? "");
     $telefone = trim($_POST["telefone"] ?? "");
     $email = trim($_POST["email"] ?? "");
@@ -53,7 +53,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $mensagem = "O nome do cliente é obrigatório.";
     } else {
         if ($id > 0) {
-            $stmt = $conexao->prepare("UPDATE clientes SET nome = ?, telefone = ?, email = ? WHERE id = ?");
+            $stmt = $conexao->prepare("UPDATE clientes SET nome = ?, telefone = ?, email = ? WHERE id_Cliente = ?");
             $stmt->bind_param("sssi", $nome, $telefone, $email, $id);
         } else {
             $stmt = $conexao->prepare("INSERT INTO clientes (nome, telefone, email) VALUES (?, ?, ?)");
@@ -122,7 +122,7 @@ $resultadoClientes = $conexao->query($baseClientes);
             <?php endif; ?>
 
             <form method="post" action="clientes.php">
-                <input type="hidden" name="id" value="<?php echo htmlspecialchars((string)($clienteEditando["id"] ?? 0)); ?>">
+                <input type="hidden" name="id_Cliente" value="<?php echo htmlspecialchars((string)($clienteEditando["id_Cliente"] ?? 0)); ?>">
 
                 <div>
                     <label>Nome:</label>
@@ -159,13 +159,13 @@ $resultadoClientes = $conexao->query($baseClientes);
                     <?php if ($resultadoClientes && $resultadoClientes->num_rows > 0) : ?>
                         <?php while ($cliente = $resultadoClientes->fetch_assoc()) : ?>
                             <tr>
-                                <td><?php echo (int)$cliente["id"]; ?></td>
+                                <td><?php echo (int)$cliente["id_Cliente"]; ?></td>
                                 <td><?php echo htmlspecialchars($cliente["nome"] ?? ""); ?></td>
                                 <td><?php echo htmlspecialchars($cliente["telefone"] ?? "-"); ?></td>
                                 <td><?php echo htmlspecialchars($cliente["email"] ?? "-"); ?></td>
                                 <td class="inline-actions">
-                                    <a class="btn btn-secondary" href="clientes.php?id=<?php echo (int)$cliente["id"]; ?>">Editar</a>
-                                    <a class="btn btn-danger" href="clientes.php?delete=<?php echo (int)$cliente["id"]; ?>" onclick="return confirm('Deseja excluir este cliente?');">Excluir</a>
+                                    <a class="btn btn-secondary" href="clientes.php?id=<?php echo (int)$cliente["id_Cliente"]; ?>">Editar</a>
+                                    <a class="btn btn-danger" href="clientes.php?delete=<?php echo (int)$cliente["id_Cliente"]; ?>" onclick="return confirm('Deseja excluir este cliente?');">Excluir</a>
                                 </td>
                             </tr>
                         <?php endwhile; ?>

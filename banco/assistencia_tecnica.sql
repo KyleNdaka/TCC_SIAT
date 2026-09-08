@@ -2,7 +2,7 @@ CREATE DATABASE IF NOT EXISTS assistencia_tecnica;
 USE assistencia_tecnica;
 
 CREATE TABLE IF NOT EXISTS clientes (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id_Cliente INT AUTO_INCREMENT PRIMARY KEY,
     nome VARCHAR(100) NOT NULL,
     telefone VARCHAR(20),
     email VARCHAR(100),
@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS clientes (
 );
 
 CREATE TABLE IF NOT EXISTS aparelhos (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id_Aparelho INT AUTO_INCREMENT PRIMARY KEY,
     cliente_id INT,
     marca VARCHAR(50),
     modelo VARCHAR(50),
@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS aparelhos (
 );
 
 CREATE TABLE IF NOT EXISTS ordens_servico (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id_Servico INT AUTO_INCREMENT PRIMARY KEY,
     cliente_id INT,
     aparelho_id INT,
     status_os VARCHAR(50) DEFAULT 'Recebido',
@@ -37,7 +37,7 @@ CREATE TABLE IF NOT EXISTS ordens_servico (
 );
 
 CREATE TABLE IF NOT EXISTS historico_status (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id_Status INT AUTO_INCREMENT PRIMARY KEY,
     ordem_id INT NOT NULL,
     status VARCHAR(50) NOT NULL,
     descricao TEXT,
@@ -48,7 +48,7 @@ CREATE TABLE IF NOT EXISTS historico_status (
 );
 
 CREATE TABLE IF NOT EXISTS pagamentos (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id_Pagamento INT AUTO_INCREMENT PRIMARY KEY,
     ordem_id INT NOT NULL,
     cliente_id INT NOT NULL,
     valor_pago DECIMAL(10,2) NOT NULL,
@@ -65,7 +65,7 @@ CREATE TABLE IF NOT EXISTS pagamentos (
 );
 
 CREATE TABLE IF NOT EXISTS despesas (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id_Despesa INT AUTO_INCREMENT PRIMARY KEY,
     descricao VARCHAR(255) NOT NULL,
     categoria VARCHAR(100) NOT NULL,
     valor DECIMAL(10,2) NOT NULL,
@@ -74,7 +74,7 @@ CREATE TABLE IF NOT EXISTS despesas (
 );
 
 CREATE TABLE IF NOT EXISTS usuarios (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id_Usuario INT AUTO_INCREMENT PRIMARY KEY,
     nome VARCHAR(100) NOT NULL,
     email VARCHAR(100) NOT NULL UNIQUE,
     senha VARCHAR(255) NOT NULL,
