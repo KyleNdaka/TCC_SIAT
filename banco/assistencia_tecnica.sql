@@ -2,7 +2,7 @@ CREATE DATABASE IF NOT EXISTS assistencia_tecnica;
 USE assistencia_tecnica;
 
 CREATE TABLE IF NOT EXISTS clientes (
-    id_Cliente INT AUTO_INCREMENT PRIMARY KEY,
+    id_Cliente INT AUTO_INCREMENT PRIMARY KEY, -- Esta é a chave primária correta
     nome VARCHAR(100) NOT NULL,
     telefone VARCHAR(20),
     email VARCHAR(100),
@@ -10,29 +10,32 @@ CREATE TABLE IF NOT EXISTS clientes (
 );
 
 CREATE TABLE IF NOT EXISTS aparelhos (
-    id_Aparelho INT AUTO_INCREMENT PRIMARY KEY,
+    id_Aparelho INT AUTO_INCREMENT PRIMARY KEY, -- Esta é a chave primária correta
     cliente_id INT,
     marca VARCHAR(50),
     modelo VARCHAR(50),
     imei VARCHAR(30),
     defeito TEXT,
+    -- ALTERADO: Mudado de 'clientes(id)' para 'clientes(id_Cliente)' para coincidir com a chave primária real
     CONSTRAINT fk_aparelhos_clientes FOREIGN KEY (cliente_id)
-        REFERENCES clientes(id)
+        REFERENCES clientes(id_Cliente)
         ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS ordens_servico (
-    id_Servico INT AUTO_INCREMENT PRIMARY KEY,
+    id_Servico INT AUTO_INCREMENT PRIMARY KEY, -- Esta é a chave primária correta
     cliente_id INT,
     aparelho_id INT,
     status_os VARCHAR(50) DEFAULT 'Recebido',
     valor DECIMAL(10,2),
     data_entrada DATETIME DEFAULT CURRENT_TIMESTAMP,
+    -- ALTERADO: Mudado de 'clientes(id)' para 'clientes(id_Cliente)'
     CONSTRAINT fk_ordens_clientes FOREIGN KEY (cliente_id)
-        REFERENCES clientes(id)
+        REFERENCES clientes(id_Cliente)
         ON DELETE CASCADE,
+    -- ALTERADO: Mudado de 'aparelhos(id)' para 'aparelhos(id_Aparelho)'
     CONSTRAINT fk_ordens_aparelhos FOREIGN KEY (aparelho_id)
-        REFERENCES aparelhos(id)
+        REFERENCES aparelhos(id_Aparelho)
         ON DELETE CASCADE
 );
 
@@ -42,8 +45,9 @@ CREATE TABLE IF NOT EXISTS historico_status (
     status VARCHAR(50) NOT NULL,
     descricao TEXT,
     data_hora DATETIME DEFAULT CURRENT_TIMESTAMP,
+    -- ALTERADO: Mudado de 'ordens_servico(id)' para 'ordens_servico(id_Servico)'
     CONSTRAINT fk_historico_ordens FOREIGN KEY (ordem_id)
-        REFERENCES ordens_servico(id)
+        REFERENCES ordens_servico(id_Servico)
         ON DELETE CASCADE
 );
 
@@ -56,11 +60,13 @@ CREATE TABLE IF NOT EXISTS pagamentos (
     data_pagamento DATETIME DEFAULT CURRENT_TIMESTAMP,
     status_pagamento VARCHAR(30) DEFAULT 'Pago',
     observacao TEXT,
+    -- ALTERADO: Mudado de 'ordens_servico(id)' para 'ordens_servico(id_Servico)'
     CONSTRAINT fk_pagamentos_ordem FOREIGN KEY (ordem_id)
-        REFERENCES ordens_servico(id)
+        REFERENCES ordens_servico(id_Servico)
         ON DELETE CASCADE,
+    -- ALTERADO: Mudado de 'clientes(id)' para 'clientes(id_Cliente)'
     CONSTRAINT fk_pagamentos_cliente FOREIGN KEY (cliente_id)
-        REFERENCES clientes(id)
+        REFERENCES clientes(id_Cliente)
         ON DELETE CASCADE
 );
 
